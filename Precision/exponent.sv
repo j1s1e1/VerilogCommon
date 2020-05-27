@@ -31,20 +31,24 @@ output out_valid,
 output [BITS-1:0] c
 );
 
-wire out_valid_m1;
-wire [BITS-1:0] log2e;
-wire [BITS-1:0] a_x_log2e;
-/*
-wire [BITS-1:0] a_in;
+logic out_valid_m1;
+logic [BITS-1:0] log2e;
+logic [BITS-1:0] a_x_log2e;
 
-assign a_in = (a[15] == 1) ?
-                 (a[14:10] > 17) ?
-                    16'b1100100000000000 : // min value -8 to prevent calulation underflow
-                    a :
-                 (a[14:10] > 17) ?
-                    16'b0100100000000000 : // max value 8 to prevent calulation overflow
-                    a;
-*/
+logic [BITS-1:0] ln_of_min;
+logic [BITS-1:0] ln_of_max;
+
+logic [BITS-1:0] clip_a;
+
+clip
+#(.BITS(BITS), .PRECISION(PRECISION))
+clip1
+(
+.a,
+.min(ln_of_min),
+.max(ln_of_max),
+.c(clip_a)
+);
 
 set_value #(.BITS(BITS), .PRECISION(PRECISION), .VALUE("LOG2_E"))
 set_value_log2e (.value(log2e));
@@ -56,7 +60,7 @@ multiply1
 .rstn(rstn),
 .clk(clk),
 .in_valid(in_valid),
-.a(a),
+.a(clip_a),
 .b(log2e),
 .out_valid(out_valid_m1),
 .c(a_x_log2e)
@@ -72,6 +76,20 @@ fm_exp2_1
 .a(a_x_log2e),
 .out_valid(out_valid),
 .c(c)
+);
+
+set_value
+#(.BITS(BITS), .PRECISION(PRECISION), .VALUE("LN_OF_MIN"))
+set_value_min_value
+(
+.value(ln_of_min)
+);     
+
+set_value
+#(.BITS(BITS), .PRECISION(PRECISION), .VALUE("LN_OF_MAX"))
+set_value_max_value
+(
+.value(ln_of_max)
 );
 
 endmodule

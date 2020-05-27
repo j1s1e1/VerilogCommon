@@ -25,8 +25,8 @@ input rstn,
 input clk,
 input in_valid,
 input [31:0] a,
-output reg out_valid,
-output reg [31:0] c
+output reg out_valid = 0,
+output reg [31:0] c = 0
 );
 
 wire [7:0] exp;

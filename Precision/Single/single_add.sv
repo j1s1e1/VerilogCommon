@@ -26,27 +26,27 @@ input clk,
 input in_valid,
 input [31:0] a,
 input [31:0] b,
-output reg out_valid = 0,
-output wire [31:0] c
+output logic out_valid = 0,
+output logic [31:0] c
 );
 
 localparam SUM_SHIFT = 40 - 25;
 
-reg [31:0] c_int = 0;
+logic [31:0] c_int = 0;
 
-wire [39:0] sum;
+logic [39:0] sum;
 
-wire a_zero;
-wire b_zero;
-wire expa_gt_expb;
-wire expb_gt_expa;
-wire mana_gt_manb;
-wire manb_gt_mana;
-wire a_gt_b;
-wire [5:0] ashift;
-wire [5:0] bshift;
-wire minus;
-wire [5:0] leading_zeros;
+logic a_zero;
+logic b_zero;
+logic expa_gt_expb;
+logic expb_gt_expa;
+logic mana_gt_manb;
+logic manb_gt_mana;
+logic a_gt_b;
+logic [5:0] ashift;
+logic [5:0] bshift;
+logic minus;
+logic [5:0] leading_zeros;
 
 assign c = c_int;
 

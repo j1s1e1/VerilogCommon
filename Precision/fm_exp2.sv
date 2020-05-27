@@ -30,6 +30,11 @@ input [BITS-1:0] a,
 output out_valid,
 output logic [BITS-1:0] c
 );
+
+// Difference is time for divide
+localparam EPART_DELAY = (PRECISION == "HALF") ? 23 + 15 : 49 + 15;
+localparam SIGN_DELAY = EPART_DELAY + 5;
+  
 logic [BITS-1:0] a_d;
 logic [BITS-1:0] a_d2;
 
@@ -42,16 +47,17 @@ logic [BITS-1:0] epart_d;
 logic [BITS-1:0] pos_one_half;
 logic [BITS-1:0] neg_one_half;
 logic [BITS-1:0] pos_or_neg_one_half;
-logic [BITS-1:0] a_plus_or_minus_one_half;    
+logic [BITS-1:0] a_plus_or_minus_one_half;  
 
 logic out_valid_sa1; 
 logic out_valid_ips;
 logic out_valid_sa2;
 logic out_valid_2ips;
+logic out_valid_epart_d;
                             
 assign pos_or_neg_one_half = (a[BITS-1]) ?
         neg_one_half : // $shortrealtobits(-0.5) :
-        pos_one_half;  // $shortrealtobits(0.5);       
+        pos_one_half;  // $shortrealtobits(0.5);            
         
 always @(posedge clk)
   a_d <= a;                                                                                     
@@ -106,7 +112,7 @@ add2
 .clk(clk),
 .in_valid(out_valid_ips),
 .a(a_d2),
-.b({~ipart[15],ipart[14:0]}),
+.b({~ipart[BITS-1],ipart[BITS-2:0]}),
 .out_valid(out_valid_sa2),
 .c(fpart)
 );
@@ -132,7 +138,7 @@ pade_approximation_exp1(
 .x(x)
 );
 
-delay #(.DELAY(38), .WIDTH(BITS))
+delay #(.DELAY(EPART_DELAY), .WIDTH(BITS))
 delay_epart
 (
 .rstn(rstn),
@@ -141,7 +147,7 @@ delay_epart
 .c(epart_d)
 ); 
 
-delay #(.DELAY(38), .WIDTH(1))
+delay #(.DELAY(EPART_DELAY), .WIDTH(1))
 delay_outv
 (
 .rstn(rstn),
@@ -149,7 +155,6 @@ delay_outv
 .a(out_valid_2ips),
 .c(out_valid_epart_d)
 ); 
-
 
 multiply 
 #(.BITS(BITS), .PRECISION(PRECISION))
@@ -161,7 +166,7 @@ multiply1
 .a(epart_d),
 .b(x),
 .out_valid(out_valid),
-.c(c)
+.c
 );
 
 endmodule

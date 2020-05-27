@@ -17,6 +17,9 @@
 // Revision 0.01 - File Created
 // Additional Comments:
 // 
+//
+//  Approximates 2^fraction for values between -0.5 and +0.5
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -235,7 +238,7 @@ add5
 .clk(clk),
 .in_valid(1'b1),
 .a(qx3_d4),
-.b({~px5[15],px5[14:0]}),
+.b({~px5[BITS-1],px5[BITS-2:0]}),
 .out_valid(),
 .c(qx3_m_px5)
 );

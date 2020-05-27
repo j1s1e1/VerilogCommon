@@ -5,7 +5,7 @@
 // 
 // Create Date: 11/20/2018 12:35:25 AM
 // Design Name: 
-// Module Name: integer_dividef
+// Module Name: integer_divide
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -33,13 +33,13 @@ input in_valid,
 input [WIDTH-1:0] dividend,
 input [WIDTH-1:0] divisor,
 output out_valid,
-output reg [WIDTH-1:0] quotient,
-output reg [WIDTH-1:0] remainder
+output reg [WIDTH-1:0] quotient = 0,
+output reg [WIDTH-1:0] remainder = 0
 );
 
-reg [2*WIDTH-1:0] dividend_copy[WIDTH+1];
-reg [2*WIDTH-1:0] divisor_copy[WIDTH+1];
-reg [WIDTH-1:0] result[WIDTH+1];
+reg [2*WIDTH-1:0] dividend_copy[WIDTH+1] = '{ default : 0 };
+reg [2*WIDTH-1:0] divisor_copy[WIDTH+1] = '{ default : {WIDTH*2{1'b1}} };
+reg [WIDTH-1:0] result[WIDTH+1] = '{ default : 0 };
 
 integer i;
 

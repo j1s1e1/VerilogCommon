@@ -27,9 +27,9 @@ input clk,
 input in_valid,
 input [31:0] a,
 input [31:0] b,
-output reg out_valid,
-output reg b_max,
-output reg [31:0] c
+output reg out_valid = 0,
+output reg b_max = 0,
+output reg [31:0] c = 0
 );
 
 always @(posedge clk)

@@ -41,7 +41,17 @@ if (PRECISION == "HALF")
     if (VALUE == "MINUS_TWO")
       assign value = 16'hC000;     
     if (VALUE == "MAX")
-      assign value = 16'h7C00;        
+      assign value = 16'h7C00; 
+    if (VALUE == "MIN")
+      assign value = 16'hFC00; 
+    if (VALUE == "FOUR")
+      assign value = 16'h4400;   
+    if (VALUE == "SIX")
+      assign value = 16'h4600;       
+    if (VALUE == "LN_OF_MAX")
+      assign value = 16'hXXXX;
+    if (VALUE == "LN_OF_MIN")
+      assign value = 16'hXXXX;                 
   end
   
 if(PRECISION[23:16] == "_")  // Fixed format is FIXED_XX_XX
@@ -76,7 +86,17 @@ if (PRECISION == "SINGLE")
     if (VALUE == "MINUS_TWO")
       assign value = 32'hC0000000;    
     if (VALUE == "MAX")
-      assign value = 32'h7F800000;          
+      assign value = 32'h7F800000;  
+    if (VALUE == "MIN")
+      assign value = 32'hFF800000;   
+    if (VALUE == "FOUR")
+      assign value = 32'h40800000;   
+    if (VALUE == "SIX")
+      assign value = 32'h40C00000;
+    if (VALUE == "LN_OF_MAX")
+      assign value = 32'h42b17218;
+    if (VALUE == "LN_OF_MIN")
+      assign value = 32'hc2b00000;                 
   end  
   
 // Constants needed for Pade Approximation for Exp()
@@ -85,6 +105,8 @@ if (PRECISION == "HALF")
   begin
     if (VALUE == "LOG2_E")
       assign value = 16'hXXXX;  // 1.44269504088896
+    if (VALUE == "LN_2")
+      assign value = 16'hXXXX;  // 0.693147180559945    
     if (VALUE == "FM_EXP2_Q0")
       assign value = 16'h5b49;  // $shortrealtobits(2.33184211722314911771e2);
     if (VALUE == "FM_EXP2_Q1")
@@ -101,6 +123,8 @@ if (PRECISION == "SINGLE")
   begin
     if (VALUE == "LOG2_E")
       assign value = 32'h3fb8aa3b;  // 1.44269504088896  
+    if (VALUE == "LN_2")
+      assign value = 32'h3f317218;  // 0.693147180559945        
     if (VALUE == "FM_EXP2_Q0")
       assign value = 32'h43692f28;  // $shortrealtobits(2.33184211722314911771e2);
     if (VALUE == "FM_EXP2_Q1")

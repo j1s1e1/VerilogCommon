@@ -26,16 +26,21 @@ module interleave_block_input
 input clk,
 input in_valid,
 input [BITS-1:0] data_in,
-output logic out_valid,
-output logic block_start,
-output logic [BITS-1:0] data_out
+output logic out_valid = 0,
+output logic block_start = 0,
+output logic [BITS-1:0] data_out = 0
 );
 
+logic start = 0;
+logic [IIR-1:0] active;
 logic [BITS-1:0] data[IIR][N] = '{ default : 0 };
 logic [$clog2(N)-1:0] input_count[IIR] = '{ default : 0 };
 logic [$clog2(IIR)-1:0] set_count = 0;
 logic [$clog2(IIR)-1:0] output_set_count = 0;
 logic [$clog2(N):0] output_count[IIR] = '{ default : N };
+
+for (genvar g = 0; g < IIR; g++)
+  assign active[g] = (output_count[g] == N) ? 0 : 1;
 
 always @(posedge clk)
   begin
@@ -45,7 +50,7 @@ always @(posedge clk)
         input_count[set_count] <= input_count[set_count] + 1;
       else
         input_count[set_count] <= 0;
-  end 
+  end
 
 always @(posedge clk)
   begin
@@ -64,22 +69,37 @@ always @(posedge clk)
       data[set_count][input_count[set_count]] <= data_in;
   end
 
+// This ensures that multiple modules with 
+// blocks offset by a number of clock cycles 
+// will generate data with equal delay
 always @(posedge clk)
-  if (output_set_count < IIR - 1)
-    output_set_count <= output_set_count + 1;
-  else
-    output_set_count <= 0;
+  begin
+    start <= start;
+    if (in_valid)
+      start <= 1;
+  end
+  
+always @(posedge clk)
+  begin
+    if (active != 0)
+      if (output_set_count < IIR - 1)
+        output_set_count <= output_set_count + 1;
+      else
+        output_set_count <= 0;
+    else
+      output_set_count <= set_count;
+  end
   
 always @(posedge clk)
   begin
     output_count <= output_count;
+    if (output_count[output_set_count] < N)
+      output_count[output_set_count] <= output_count[output_set_count] + 1;
     if (in_valid)
       begin
         if (input_count[set_count] == 0)
           output_count[set_count] <= 0;
       end
-    if (output_count[output_set_count] < N)
-      output_count[output_set_count] <= output_count[output_set_count] + 1;
   end
 
 always @(posedge clk)

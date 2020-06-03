@@ -26,8 +26,8 @@ module reverse_order
 input clk,
 input in_valid,
 input [BITS-1:0] data_in,
-output logic out_valid,
-output logic [BITS-1:0] data_out
+output logic out_valid = 0,
+output logic [BITS-1:0] data_out = 0
 );
 
 localparam DEPTH = N + (N+1)/2;
